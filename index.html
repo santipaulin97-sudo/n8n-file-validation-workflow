@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>n8n Workflow – File Extraction & Validation</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Inter", sans-serif;
+            background: #0f1116;
+            color: #e6e6e6;
+        }
+
+        header {
+            padding: 40px 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #0ea5e9 0%, #14b8a6 100%);
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            background: #1b1e25;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #2a2f3a;
+            box-shadow: 0 0 25px rgba(0,0,0,0.25);
+            animation: fadeIn 0.7s ease-in-out;
+        }
+
+        h2 {
+            margin: 0 0 15px;
+            color: #0ea5e9;
+        }
+
+        p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        pre {
+            border-radius: 10px;
+            padding: 20px;
+            background: #0d1117;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #737373;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        n8n Workflow – File Processing & Validation 🚀
+    </header>
+
+    <div class="container">
+
+        <div class="section">
+            <h2>🌟 Overview</h2>
+            <p>
+                This page showcases the full n8n workflow used for automated XLSX extraction,
+                multi-sheet validation, header normalization, and VerdiCode processing logic.
+            </p>
+            <p>
+                The workflow includes custom JavaScript validations, sheet extractions, data merging,
+                and automated actions via Gmail & Google Sheets.
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>📄 Workflow JSON (full version)</h2>
+            <p>This is the full exported workflow, displayed with syntax highlighting:</p>
+
+            <pre><code class="json" id="jsonViewer"></code></pre>
+        </div>
+
+    </div>
+
+    <footer>
+        Built by Santiago Paulin • Data Engineer • n8n Automation & Validation Workflows
+    </footer>
+
+    <script>
+        const workflowJSON = `{
+  "name": "File Extraction Validation and Merge with VerdiCode Processing",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "id": "f13532ad-d481-4cbb-a44a-55d04fb3e32e",
+      "name": "Analizamos formato XLSX",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -48,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "readAsString": true,
+          "sheetName": "LABOR"
+        }
+      },
+      "id": "dd7dc94f-6f0b-455e-8cc8-be255d2cf2ae",
+      "name": "Extraemos headers de LABOR",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -224,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "readAsString": true,
+          "sheetName": "INDIRETOS"
+        }
+      },
+      "id": "5654de69-bc6c-474b-92ac-bf1da2f596bc",
+      "name": "Extraemos headers de INDIRETOS",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -224,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "sheetName": "Periodo"
+        }
+      },
+      "id": "02a965c9-9dc6-4669-8cf7-4efef425326d",
+      "name": "Validacion de Periodo",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -224,
+        576
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "sheetName": "Diaristas"
+        }
+      },
+      "id": "fb33c225-9d0b-4825-bc94-38c367fbc479",
+      "name": "Hoja Diaristas",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -224,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "sheetName": "Hora Extra"
+        }
+      },
+      "id": "11fff518-9bf5-4bae-8444-e534e9c22c40",
+      "name": "Hoja Hora Extra",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -224,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "sheetName": "Absentismo"
+        }
+      },
+      "id": "2ef485a7-e800-42ec-844e-b8c43835d18e",
+      "name": "Hoja Absentismo",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -224,
+        1152
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "sheetName": "Others"
+        }
+      },
+      "id": "b4885201-096e-422e-8363-f2d5b09d9cea",
+      "name": "Hoja Others",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -224,
+        1344
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "sheetName": "Saldo Banco de Horas"
+        }
+      },
+      "id": "04f8d436-abd0-4a37-9c2f-3da08e88d4e3",
+      "name": "Saldo Banco de Horas",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -224,
+        1536
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "sheetName": "Calculadora ABS"
+        }
+      },
+      "id": "7740fb23-3643-4b2f-b51f-cae7b93c2e96",
+      "name": "Calculadora ABS",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -224,
+        1728
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "sheetName": "Allowance"
+        }
+      },
+      "id": "bbb82c03-41dc-4ac6-940b-bbfeb28cdba3",
+      "name": "Allowance",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -224,
+        1920
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "sheetName": "PREMIAÇÃO PRESENTEÍSMO"
+        }
+      },
+      "id": "0f2b4fc2-e8fa-40d1-b0e8-affaddd91674",
+      "name": "PREMIAÇÃO PRESENTEÍSMO",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -224,
+        2112
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Validate LABOR headers\nconst items = $input.all();\n\n// Expected LABOR headers\nconst expectedHeaders = [\n  'MATRICULA',\n  'NOME',\n  'CENTRO DE CUSTO',\n  'CARGO',\n  'DATA ADMISSAO',\n  'SALARIO BASE',\n  'HORAS TRABALHADAS',\n  'HORAS EXTRAS',\n  'FALTAS',\n  'ATRASOS'\n];\n\nconst validationResult = {\n  sheetName: 'LABOR',\n  status: 'success',\n  errors: [],\n  missingHeaders: [],\n  extraHeaders: []\n};\n\ntry {\n  if (!items || items.length === 0) {\n    validationResult.status = 'error';\n    validationResult.errors.push('No data received from LABOR sheet extraction');\n    return [{ json: validationResult }];\n  }\n\n  const firstItem = items[0].json;\n  \n  // Get actual headers from the data\n  const actualHeaders = Object.keys(firstItem);\n  \n  // Check for missing headers\n  for (const expectedHeader of expectedHeaders) {\n    if (!actualHeaders.includes(expectedHeader)) {\n      validationResult.missingHeaders.push(expectedHeader);\n    }\n  }\n  \n  // Check for extra headers\n  for (const actualHeader of actualHeaders) {\n    if (!expectedHeaders.includes(actualHeader)) {\n      validationResult.extraHeaders.push(actualHeader);\n    }\n  }\n  \n  // Set status based on validation results\n  if (validationResult.missingHeaders.length > 0) {\n    validationResult.status = 'error';\n    validationResult.errors.push(`Missing required headers: ${validationResult.missingHeaders.join(', ')}`);\n  }\n  \n  if (validationResult.extraHeaders.length > 0) {\n    validationResult.status = 'warning';\n    validationResult.errors.push(`Extra headers found: ${validationResult.extraHeaders.join(', ')}`);\n  }\n  \n} catch (error) {\n  validationResult.status = 'error';\n  validationResult.errors.push(`Validation error: ${error.message}`);\n}\n\nreturn [{ json: validationResult }];"
+      },
+      "id": "66e7f20f-9e46-4b7e-b1cf-41bc58c5e69d",
+      "name": "Validamos headers de LABOR",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Validate INDIRETOS headers\nconst items = $input.all();\n\n// Expected headers for INDIRETOS sheet\nconst expectedHeaders = [\n  'MATRICULA',\n  'NOME',\n  'CARGO',\n  'CENTRO DE CUSTO',\n  'HORAS TRABALHADAS',\n  'VALOR HORA',\n  'TOTAL'\n];\n\nconst validationResult = {\n  sheetName: 'INDIRETOS',\n  status: 'success',\n  errors: []\n};\n\ntry {\n  if (!items || items.length === 0) {\n    validationResult.status = 'error';\n    validationResult.errors.push('No data received from INDIRETOS sheet extraction');\n    return [{ json: validationResult }];\n  }\n\n  const firstItem = items[0].json;\n  \n  // Get actual headers from the data\n  const actualHeaders = Object.keys(firstItem);\n  \n  // Check for missing headers\n  const missingHeaders = expectedHeaders.filter(header => !actualHeaders.includes(header));\n  \n  // Check for extra headers\n  const extraHeaders = actualHeaders.filter(header => !expectedHeaders.includes(header));\n  \n  if (missingHeaders.length > 0) {\n    validationResult.status = 'error';\n    validationResult.errors.push(`Missing headers in INDIRETOS: ${missingHeaders.join(', ')}`);\n  }\n  \n  if (extraHeaders.length > 0) {\n    validationResult.status = 'warning';\n    validationResult.errors.push(`Extra headers found in INDIRETOS: ${extraHeaders.join(', ')}`);\n  }\n  \n  if (validationResult.errors.length === 0) {\n    validationResult.errors.push('All INDIRETOS headers are valid');\n  }\n  \n} catch (error) {\n  validationResult.status = 'error';\n  validationResult.errors.push(`Error validating INDIRETOS headers: ${error.message}`);\n}\n\nreturn [{ json: validationResult }];"
+      },
+      "id": "61bf8bfd-20d3-432d-94cc-a6d7f325b4ec",
+      "name": "Validamos headers de INDIRETOS",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "<__PLACEHOLDER_VALUE__VerdiCode validation logic for Periodo sheet__>"
+      },
+      "id": "0ae14bc2-3175-4653-96c1-30b1f921ec2e",
+      "name": "VerdiCode Periodo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        576
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "<__PLACEHOLDER_VALUE__JavaScript code for VerdiCode validation logic for Diaristas sheet__>"
+      },
+      "id": "5db86100-cbcb-4d9d-aa89-8b3746c521c0",
+      "name": "VerdiCode Diaristas",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "<__PLACEHOLDER_VALUE__JavaScript code for VerdiCode validation logic for Hora Extra sheet__>"
+      },
+      "id": "6ba3abec-0056-44b1-ad6b-298baa4b2303",
+      "name": "VerdiCode Hora Extra",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "<__PLACEHOLDER_VALUE__JavaScript code for VerdiCode validation logic for Absentismo sheet__>"
+      },
+      "id": "c67b1ef9-c822-4080-b8ea-a6330cdaa8c2",
+      "name": "VerdiCode Absentismo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        1152
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "<__PLACEHOLDER_VALUE__JavaScript code for VerdiCode validation logic for Others sheet__>"
+      },
+      "id": "615b1ecc-5727-44e5-8a8f-8350e6bd4bc9",
+      "name": "VerdiCode Others",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        1344
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "<__PLACEHOLDER_VALUE__JavaScript code for VerdiCode validation logic for Saldo Banco sheet__>"
+      },
+      "id": "818449f4-7605-4b32-b048-19d87f2a1054",
+      "name": "VerdiCode Saldo Banco",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        1536
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "<__PLACEHOLDER_VALUE__JavaScript code for VerdiCode validation logic for Calculadora ABS sheet__>"
+      },
+      "id": "18e5359d-7bc4-4b25-9294-b44212841697",
+      "name": "VerdiCode Calculadora ABS",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        1728
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "<__PLACEHOLDER_VALUE__JavaScript code for VerdiCode validation logic for Allowance sheet__>"
+      },
+      "id": "71cb9e47-733d-4c30-afa0-0b39987b5025",
+      "name": "VerdiCode Allowance",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        1920
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "<__PLACEHOLDER_VALUE__JavaScript code for VerdiCode validation logic for PREMIAÇÃO sheet__>"
+      },
+      "id": "4927b1bc-dc5b-4e22-b438-c19618570882",
+      "name": "VerdiCode PREMIAÇÃO",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        2112
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "numberInputs": 12,
+        "options": {
+          "includeUnpaired": true
+        }
+      },
+      "id": "52295d3b-a7d7-40da-a46d-a9d3667878ab",
+      "name": "Merge All Validations",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        768,
+        896
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $('Merge All Validations').item.json.allValidationsPassed }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0ad03874-a0f4-49ef-87b2-cec5a92b3f9f",
+      "name": "El archivo esta bien?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1072,
+        1056
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "<__PLACEHOLDER_VALUE__JavaScript code for VerdiCode validation logic for Hora Extra sheet__>"
+      },
+      "id": "74b1c85a-c899-426a-a9f5-2bffb3a3127a",
+      "name": "VerdiCode Hora Extra1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1392,
+        1296
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "santipaulin97@gmail.com",
+        "subject": "Hi Santiago",
+        "message": "=jsoninput",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1600,
+        1296
+      ],
+      "id": "441b1857-7ffc-4957-9164-8f25b94f9a7c",
+      "name": "Send a message",
+      "webhookId": "b65e5f50-e5a2-4e83-b475-e4af45b8c4d5",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "tuf9mM4I0lfbCM6x",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1392,
+        960
+      ],
+      "id": "a1c154c6-412b-48d0-a550-e022ce2a01a4",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "uGNeiyJb6U02wTKx",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -864,
+        1072
+      ],
+      "id": "cb3b196d-9c86-48a7-917f-d4853ef4738e",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "<__PLACEHOLDER_VALUE__File download URL__>",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "6a031ace-96c6-4cb0-80d0-33ef2b854c80",
+      "name": "Download File",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -640,
+        1072
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Analizamos formato XLSX": {
+      "main": [
+        [
+          {
+            "node": "Merge All Validations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraemos headers de LABOR": {
+      "main": [
+        [
+          {
+            "node": "Validamos headers de LABOR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraemos headers de INDIRETOS": {
+      "main": [
+        [
+          {
+            "node": "Validamos headers de INDIRETOS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validacion de Periodo": {
+      "main": [
+        [
+          {
+            "node": "VerdiCode Periodo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hoja Diaristas": {
+      "main": [
+        [
+          {
+            "node": "VerdiCode Diaristas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hoja Hora Extra": {
+      "main": [
+        [
+          {
+            "node": "VerdiCode Hora Extra",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hoja Absentismo": {
+      "main": [
+        [
+          {
+            "node": "VerdiCode Absentismo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hoja Others": {
+      "main": [
+        [
+          {
+            "node": "VerdiCode Others",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Saldo Banco de Horas": {
+      "main": [
+        [
+          {
+            "node": "VerdiCode Saldo Banco",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculadora ABS": {
+      "main": [
+        [
+          {
+            "node": "VerdiCode Calculadora ABS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Allowance": {
+      "main": [
+        [
+          {
+            "node": "VerdiCode Allowance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PREMIAÇÃO PRESENTEÍSMO": {
+      "main": [
+        [
+          {
+            "node": "VerdiCode PREMIAÇÃO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validamos headers de LABOR": {
+      "main": [
+        [
+          {
+            "node": "Merge All Validations",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Validamos headers de INDIRETOS": {
+      "main": [
+        [
+          {
+            "node": "Merge All Validations",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "VerdiCode Periodo": {
+      "main": [
+        [
+          {
+            "node": "Merge All Validations",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "VerdiCode Diaristas": {
+      "main": [
+        [
+          {
+            "node": "Merge All Validations",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "VerdiCode Hora Extra": {
+      "main": [
+        [
+          {
+            "node": "Merge All Validations",
+            "type": "main",
+            "index": 5
+          }
+        ]
+      ]
+    },
+    "VerdiCode Absentismo": {
+      "main": [
+        [
+          {
+            "node": "Merge All Validations",
+            "type": "main",
+            "index": 6
+          }
+        ]
+      ]
+    },
+    "VerdiCode Others": {
+      "main": [
+        [
+          {
+            "node": "Merge All Validations",
+            "type": "main",
+            "index": 7
+          }
+        ]
+      ]
+    },
+    "VerdiCode Saldo Banco": {
+      "main": [
+        [
+          {
+            "node": "Merge All Validations",
+            "type": "main",
+            "index": 8
+          }
+        ]
+      ]
+    },
+    "VerdiCode Calculadora ABS": {
+      "main": [
+        [
+          {
+            "node": "Merge All Validations",
+            "type": "main",
+            "index": 9
+          }
+        ]
+      ]
+    },
+    "VerdiCode Allowance": {
+      "main": [
+        [
+          {
+            "node": "Merge All Validations",
+            "type": "main",
+            "index": 10
+          }
+        ]
+      ]
+    },
+    "Merge All Validations": {
+      "main": [
+        [
+          {
+            "node": "El archivo esta bien?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "El archivo esta bien?": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "VerdiCode Hora Extra1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "VerdiCode PREMIAÇÃO": {
+      "main": [
+        [
+          {
+            "node": "Merge All Validations",
+            "type": "main",
+            "index": 11
+          }
+        ]
+      ]
+    },
+    "VerdiCode Hora Extra1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download File": {
+      "main": [
+        [
+          {
+            "node": "Analizamos formato XLSX",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Extraemos headers de LABOR",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Extraemos headers de INDIRETOS",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Validacion de Periodo",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Hoja Diaristas",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Hoja Hora Extra",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Hoja Absentismo",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Hoja Others",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Saldo Banco de Horas",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Calculadora ABS",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Allowance",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "PREMIAÇÃO PRESENTEÍSMO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "93007c71-6c20-4345-aa38-9f77974c0db7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "fad9e878b5e2431885ccb959a2d4d28eee77d14ed289cc344546cd3a588f6fc3"
+  },
+  "id": "ZGtDbLc9Cp3qhoVl",
+  "tags": []
+}`;
+
+        document.getElementById("jsonViewer").textContent = workflowJSON;
+        hljs.highlightAll();
+    </script>
+
+</body>
+</html>
