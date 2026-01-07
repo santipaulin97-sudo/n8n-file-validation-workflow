@@ -115,3 +115,6 @@ Data Engineer – Automation, ETL & n8n Workflows
 
 You can add the workflow diagram under a `docs/` folder:
 
+<img width="1579" height="432" alt="image" src="https://github.com/user-attachments/assets/fd963545-bdb6-4741-b726-f8ab2f5912ac" />
+
+
